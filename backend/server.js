@@ -1,17 +1,34 @@
-const express = require("express");
+﻿const express = require("express");
 require("dotenv").config();
+
 const connectDB = require("./config/db");
-const app = express();
-connectDB();
 const healthRoutes = require("./routes/healthRoutes");
+const authRoutes = require("./routes/authRoutes");
+const protectedRoutes = require("./routes/protectedRoutes");
+const serviceRoutes = require("./routes/serviceRoutes");
+
+const app = express();
+
 app.use(express.json());
 app.use("/", healthRoutes);
-const PORT = 5000;
+app.use("/api/auth", authRoutes);
+app.use("/api/protected", protectedRoutes);
+app.use("/api/services", serviceRoutes);
 
-app.get("/", (req, res) => {
-    res.send("SlotBook API is running");
-});
+const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-    console.log(`SlotBook backend running on port ${PORT}`);
-});
+const startServer = async () => {
+    await connectDB();
+    app.listen(PORT, () => {
+        console.log(`SlotBook backend running on port ${PORT}`);
+    });
+};
+
+if (require.main === module) {
+    startServer().catch(error => {
+        console.error("Failed to start SlotBook:", error.message);
+        process.exit(1);
+    });
+}
+
+module.exports = app;
