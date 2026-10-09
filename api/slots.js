@@ -4,9 +4,8 @@ export const methods = ["GET"];
 export default async function (req, res) {
   const date = String(req.query.date || "");
   const serviceId = String(req.query.service_id || "");
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^[0-9a-f-]{36}$/i.test(serviceId)) {
-    return res.status(400).json({ error: "Choose a valid service and date." });
-  }
+  const excludeId = String(req.query.exclude_id || "");
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^[0-9a-f-]{36}$/i.test(serviceId) || (excludeId && !/^[0-9a-f-]{36}$/i.test(excludeId))) return res.status(400).json({ error: "Choose a valid service and date." });
   const parsed = new Date(date + "T12:00:00Z");
   if (Number.isNaN(parsed.getTime()) || parsed.toISOString().slice(0,10) !== date) return res.status(400).json({ error: "Invalid date." });
   if (date < new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" })) return res.json({ slots: [] });
@@ -17,7 +16,7 @@ export default async function (req, res) {
   if (!hoursResult.rows.length || !hoursResult.rows[0].is_open) return res.json({ slots: [] });
   const holiday = await db.query("SELECT id FROM blocked_dates WHERE day = $1::date", [date]);
   if (holiday.rows.length) return res.json({ slots: [] });
-  const bookings = await db.query("SELECT start_at, end_at FROM bookings WHERE status = 'confirmed' AND start_at < (($1::date + TIME '23:59:59') AT TIME ZONE 'Asia/Kolkata') AND end_at > (($1::date + TIME '00:00:00') AT TIME ZONE 'Asia/Kolkata')", [date]);
+  const bookings = await db.query("SELECT start_at, end_at FROM bookings WHERE status = 'confirmed' AND ($2::uuid IS NULL OR id <> $2::uuid) AND start_at < (($1::date + TIME '23:59:59') AT TIME ZONE 'Asia/Kolkata') AND end_at > (($1::date + TIME '00:00:00') AT TIME ZONE 'Asia/Kolkata')", [date, excludeId || null]);
   const [openH, openM] = String(hoursResult.rows[0].opens_at).slice(0,5).split(":").map(Number);
   const [closeH, closeM] = String(hoursResult.rows[0].closes_at).slice(0,5).split(":").map(Number);
   const duration = Number(serviceResult.rows[0].duration_minutes);
