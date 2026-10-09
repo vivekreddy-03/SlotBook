@@ -1,0 +1,1 @@
+INSERT INTO services (name, description, duration_minutes, price_cents) VALUES ('General Consultation','A focused 30-minute consultation with a specialist.',30,150000),('Extended Session','A detailed one-hour appointment for more complex needs.',60,250000),('Quick Follow-up','A short follow-up visit to review progress.',15,80000)
