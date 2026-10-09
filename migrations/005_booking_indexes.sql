@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS bookings_customer_idx ON bookings(customer_id, start_at DESC)

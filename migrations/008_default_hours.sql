@@ -1,0 +1,1 @@
+INSERT INTO working_hours (weekday, opens_at, closes_at, is_open) VALUES (0,'10:00','14:00',TRUE),(1,'09:00','17:00',TRUE),(2,'09:00','17:00',TRUE),(3,'09:00','17:00',TRUE),(4,'09:00','17:00',TRUE),(5,'09:00','17:00',TRUE),(6,'10:00','14:00',TRUE)

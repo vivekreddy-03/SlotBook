@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS working_hours (weekday INTEGER PRIMARY KEY CHECK (weekday BETWEEN 0 AND 6), opens_at TIME NOT NULL, closes_at TIME NOT NULL, is_open BOOLEAN NOT NULL DEFAULT TRUE, CHECK (closes_at > opens_at))

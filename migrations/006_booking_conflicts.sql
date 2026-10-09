@@ -1,0 +1,1 @@
+ALTER TABLE bookings ADD CONSTRAINT bookings_no_overlapping_active EXCLUDE USING gist (tstzrange(start_at, end_at, '[)') WITH &&) WHERE (status = 'confirmed')

@@ -1,0 +1,5 @@
+name = "SlotBook"
+
+[auth]
+enabled = true
+providers = ["email"]

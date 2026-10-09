@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS blocked_dates (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), day DATE NOT NULL UNIQUE, reason TEXT NOT NULL DEFAULT 'Unavailable', created_at TIMESTAMPTZ NOT NULL DEFAULT now())
